@@ -1,7 +1,7 @@
 select, input {
   margin: 0;
   max-width: 250px;
-  margin-left: 20px !important;
+  margin-right: 20px !important;
 }
 
 .wrapper {
@@ -28,4 +28,9 @@ select, input {
 
 .footer {
   margin-top: 30px;
+}
+
+.footer__inputs {
+  display: flex;
+  flex-direction: row;
 }
