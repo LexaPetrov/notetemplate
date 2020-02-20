@@ -124,7 +124,6 @@ function App() {
   }
 
   return (
-    <div className="App">
       <div className='wrapper'>
         {
           renderHeader()
@@ -137,7 +136,6 @@ function App() {
           renderFooter()
         }
       </div>
-    </div>
   );
 }
 
