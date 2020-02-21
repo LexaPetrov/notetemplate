@@ -1,8 +1,9 @@
 select,
 input {
   margin: 0;
-  max-width: 250px;
+  max-width: 300px;
   margin-right: 20px !important;
+  margin-left: 10px !important;
 }
 
 .wrapper {
@@ -34,8 +35,56 @@ input {
 
 .body__list__row {
   display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: row;
+}
+
+.body__list li {
+  border: 1px dashed #ccc;
+  margin: 20px 0px;
+  padding: 5px;
+}
+
+.reschedule__wrapper {
+
+}
+
+.datepicker__wrapper {
+  width: 100px;
+  margin-left: 10px;
+  margin-right: 30px;
+  display: flex;
+  flex-direction: row;
   align-items: center;
 }
+
+.reschedule__main__component {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border: 1px dashed #ccc;
+  margin: 20px 0px;
+  padding: 5px;
+}
+
+.reschedule__header, .reschedule__main__component {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 16px;
+}
+
+.reschedule__header__dates {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.reschedule__header__dates input {
+  width: 15px;
+}
+
 
 .footer {
   margin-top: 30px;
