@@ -271,7 +271,6 @@ function App() {
               )
             })
           }
-
         </div>
         <button
           className="btn-floating btn-small waves-effect waves-light"
