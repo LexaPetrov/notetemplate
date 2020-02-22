@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import ru from "date-fns/locale/ru";
 import locale from "date-fns/esm/locale/ru";
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+import { generateDocFile } from "./generateDoc";
 
 import "./App.css";
 import "materialize-css/dist/css/materialize.min.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { stat } from "fs";
 
 function App() {
   const [state, setState] = useState({
@@ -50,10 +54,6 @@ function App() {
     });
   };
 
-  const RescheduleMemo = () => {
-    return <p>RescheduleMemo</p>;
-  };
-
   const handleSubstituteChange = e =>
     substitutingSetState({
       ...substitutingState,
@@ -92,6 +92,20 @@ function App() {
       ...substitutingState,
       days: newDays
     });
+  };
+
+  const handleSaveClick = () => {
+    let doc = generateDocFile(
+      state,
+      state.theme === "О замене преподавателя" ? substitutingState : "HW"
+    );
+    Packer.toBlob(doc).then(blob => {
+      saveAs(blob, "Служебная записка.docx");
+    });
+  };
+
+  const RescheduleMemo = () => {
+    return <p>RescheduleMemo</p>;
   };
 
   const SubstitutingBody = () => {
@@ -271,7 +285,9 @@ function App() {
               name="footerWhoName"
             />
           </div>
-          <a className="waves-effect waves-light btn">сохранить записку</a>
+          <a className="waves-effect waves-light btn" onClick={handleSaveClick}>
+            сохранить записку
+          </a>
         </div>
       </div>
     );
