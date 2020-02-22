@@ -23,6 +23,25 @@ export const generateDocFile = (state, bodyState) => {
           }
         }
       ]
+    },
+    numbering: {
+      config: [
+        {
+          reference: "concrete",
+          levels: [
+            {
+              level: 0,
+              format: "decimal",
+              text: "%1.",
+              style: {
+                paragraph: {
+                  indent: { left: 720, hanging: 360 }
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   });
 
@@ -72,7 +91,7 @@ export const generateDocFile = (state, bodyState) => {
             bold: true
           }),
           new TextRun({
-            text: state.to + " " + state.fromName
+            text: state.from + " " + state.fromName
           })
         ]
       }),
@@ -208,6 +227,77 @@ const generteSubstitutingBody = state => {
   ];
 };
 
-const generateRescheduleBody = (doc, state) => {
-  return [];
+const generateRescheduleBody = state => {
+  return [
+    new Paragraph({
+      indent: {
+        hanging: -300
+      },
+      style: "Common1",
+      children: [
+        new TextRun({
+          text:
+            "В связи с " +
+            state.rescheduleReason +
+            " у " +
+            state.reschedulePost +
+            " " +
+            state.rescheduleName +
+            " прошу " +
+            state.rescheduleHeaderDays
+              .map(day => day.toLocaleString().split(",")[0])
+              .join(", ") +
+            " перенести занятия по следующим дисциплинам:"
+        })
+      ]
+    }),
+    ...state.rescheduleMainComponents.flatMap(day => {
+      return [
+        new Paragraph({
+          style: "Common1",
+          numbering: {
+            reference: "concrete",
+            level: 0,
+            custom: true
+          },
+          children: [
+            new TextRun({
+              text:
+                day.type +
+                ' по дисциплине "' +
+                day.discipline +
+                '" (гр. ' +
+                day.group +
+                ", " +
+                locale.localize.day(day.date.getDay()) +
+                ", " +
+                day.date.toLocaleString().split(",")[0] +
+                ", " +
+                day.class +
+                " пара) будет перенесено на " +
+                locale.localize.day(day.newDate.getDay()) +
+                ", " +
+                day.newDate.toLocaleString().split(",")[0] +
+                ", " +
+                day.newClass +
+                " пара, ауд. " +
+                day.room,
+              size: 28,
+              font: {
+                name: "Times New Roman"
+              }
+            })
+          ]
+        })
+      ];
+    }),
+    new Paragraph({
+      style: "Common1",
+      text: " "
+    }),
+    new Paragraph({
+      style: "Common1",
+      text: " "
+    })
+  ];
 };

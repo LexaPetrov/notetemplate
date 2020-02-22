@@ -125,9 +125,9 @@ function App() {
     });
   };
 
-  const handleRescheduleMainComponentsDateChange = (date, index) => {
+  const handleRescheduleMainComponentsDateChange = (date, index, name) => {
     const mainComponentDate = [...rescheduleState.rescheduleMainComponents];
-    mainComponentDate[index].date = date;
+    mainComponentDate[index][name] = date;
     rescheduleSetState({
       ...rescheduleState,
       rescheduleMainComponents: mainComponentDate
@@ -228,7 +228,11 @@ function App() {
                     }
                     locale={ru}
                     onChange={date =>
-                      handleRescheduleMainComponentsDateChange(date, index)
+                      handleRescheduleMainComponentsDateChange(
+                        date,
+                        index,
+                        "date"
+                      )
                     }
                     name="date"
                     dateFormat={"dd.MM.yyyy"}
@@ -253,7 +257,11 @@ function App() {
                     }
                     locale={ru}
                     onChange={date =>
-                      handleRescheduleMainComponentsDateChange(date, index)
+                      handleRescheduleMainComponentsDateChange(
+                        date,
+                        index,
+                        "newDate"
+                      )
                     }
                     name="newDate"
                     dateFormat={"dd.MM.yyyy"}
@@ -337,7 +345,9 @@ function App() {
   const handleSaveClick = () => {
     let doc = generateDocFile(
       state,
-      state.theme === "О замене преподавателя" ? substitutingState : "HW"
+      state.theme === "О замене преподавателя"
+        ? substitutingState
+        : rescheduleState
     );
     Packer.toBlob(doc).then(blob => {
       saveAs(blob, "Служебная записка.docx");
