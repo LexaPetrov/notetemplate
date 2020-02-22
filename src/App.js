@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import ru from "date-fns/locale/ru";
+import { saveAs } from "file-saver";
+import { Packer } from "docx";
+import { generateDocFile } from "./generateDoc";
 
 import "./App.css";
 import "materialize-css/dist/css/materialize.min.css";
@@ -35,43 +38,41 @@ function App() {
   });
 
   const [rescheduleState, rescheduleSetState] = useState({
-    rescheduleReason: '',
-    reschedulePost: '',
-    rescheduleName: '',
-    rescheduleHeaderDays: [
-      new Date()
-    ],
+    rescheduleReason: "",
+    reschedulePost: "",
+    rescheduleName: "",
+    rescheduleHeaderDays: [new Date()],
     rescheduleMainComponents: [
       {
-        type: 'Лабораторная работа',
-        discipline: '',
-        group: '',
+        type: "Лабораторная работа",
+        discipline: "",
+        group: "",
         date: new Date(),
         newDate: new Date(),
         class: 1,
         newClass: 1,
-        room: ''
+        room: ""
       }
     ]
-  })
+  });
 
   const handleRescheduleHeaderDaysAdd = () => {
-    const headerDays = [...rescheduleState.rescheduleHeaderDays]
-    headerDays.push(new Date())
+    const headerDays = [...rescheduleState.rescheduleHeaderDays];
+    headerDays.push(new Date());
     rescheduleSetState({
       ...rescheduleState,
       rescheduleHeaderDays: headerDays
-    })
-  }
+    });
+  };
 
   const handleRescheduleHeaderDaysChange = (date, i) => {
-    const headerDays = [...rescheduleState.rescheduleHeaderDays]
-    headerDays[i] = date
+    const headerDays = [...rescheduleState.rescheduleHeaderDays];
+    headerDays[i] = date;
     rescheduleSetState({
       ...rescheduleState,
       rescheduleHeaderDays: headerDays
-    })
-  }
+    });
+  };
 
   const handleChange = e => {
     const value = e.target.value;
@@ -89,94 +90,99 @@ function App() {
   };
 
   const handleChangeMainRescheduleInputs = (e, i) => {
-    const value = e.target.value
-    const component = [...rescheduleState.rescheduleMainComponents]
-    component[i][e.target.name] = value
+    const value = e.target.value;
+    const component = [...rescheduleState.rescheduleMainComponents];
+    component[i][e.target.name] = value;
     rescheduleSetState({
       ...rescheduleState,
       rescheduleMainComponents: component
-    })
-  }
+    });
+  };
 
-  const handleChangeRescheduleInputs = (e) => {
+  const handleChangeRescheduleInputs = e => {
     const value = e.target.value;
     rescheduleSetState({
       ...rescheduleState,
       [e.target.name]: value
     });
-  }
+  };
 
   const handleRescheduleMainComponentsAdd = () => {
-    const components = [...rescheduleState.rescheduleMainComponents]
+    const components = [...rescheduleState.rescheduleMainComponents];
     components.push({
-      type: 'Лабораторная работа',
-      discipline: '',
-      group: '',
+      type: "Лабораторная работа",
+      discipline: "",
+      group: "",
       date: new Date(),
       newDate: new Date(),
       class: 1,
       newClass: 1,
-      room: ''
-    })
+      room: ""
+    });
     rescheduleSetState({
       ...rescheduleState,
       rescheduleMainComponents: components
-    })
-  }
+    });
+  };
 
   const handleRescheduleMainComponentsDateChange = (date, index) => {
-    const mainComponentDate = [...rescheduleState.rescheduleMainComponents]
-    mainComponentDate[index].date = date
+    const mainComponentDate = [...rescheduleState.rescheduleMainComponents];
+    mainComponentDate[index].date = date;
     rescheduleSetState({
       ...rescheduleState,
       rescheduleMainComponents: mainComponentDate
-    })
-  }
+    });
+  };
 
   const RescheduleMemo = () => {
     return (
-      <div className='reschedule__wrapper'>
-        <div className='reschedule__header'>
+      <div className="reschedule__wrapper">
+        <div className="reschedule__header">
           <p>В связи с</p>
-          <input placeholder="укажите причину"
+          <input
+            placeholder="укажите причину"
             name="rescheduleReason"
             type="text"
             value={rescheduleState.rescheduleReason}
             onChange={handleChangeRescheduleInputs}
           />
           <p>у</p>
-          <input placeholder="укажите должность"
+          <input
+            placeholder="укажите должность"
             name="reschedulePost"
             type="text"
             value={rescheduleState.reschedulePost}
             onChange={handleChangeRescheduleInputs}
           />
-          <input placeholder="укажите имя"
+          <input
+            placeholder="укажите имя"
             name="rescheduleName"
             type="text"
             value={rescheduleState.rescheduleName}
             onChange={handleChangeRescheduleInputs}
           />
           <p>прошу</p>
-          <div className='reschedule__header__dates'>
-            {
-              rescheduleState.rescheduleHeaderDays.map((date, index) => {
-                return (
-                  <div className={'datepicker__wrapper'} key={index}>
-                    {rescheduleState.rescheduleHeaderDays.length > 1 && <span>,</span>}
-                    <DatePicker
-                      selected={rescheduleState.rescheduleHeaderDays[index]}
-                      locale={ru}
-                      onChange={(date) => handleRescheduleHeaderDaysChange(date, index)}
-                      name="date"
-                      dateFormat={"dd.MM.yyyy"}
-                    />
-                  </div>
-                )
-              })
-            }
+          <div className="reschedule__header__dates">
+            {rescheduleState.rescheduleHeaderDays.map((date, index) => {
+              return (
+                <div className={"datepicker__wrapper"} key={index}>
+                  {rescheduleState.rescheduleHeaderDays.length > 1 && (
+                    <span>,</span>
+                  )}
+                  <DatePicker
+                    selected={rescheduleState.rescheduleHeaderDays[index]}
+                    locale={ru}
+                    onChange={date =>
+                      handleRescheduleHeaderDaysChange(date, index)
+                    }
+                    name="date"
+                    dateFormat={"dd.MM.yyyy"}
+                  />
+                </div>
+              );
+            })}
             <button
-              style={{ marginRight: '20px' }}
+              style={{ marginRight: "20px" }}
               className="btn-floating btn-small waves-effect waves-light"
               onClick={handleRescheduleHeaderDaysAdd}
             >
@@ -185,92 +191,98 @@ function App() {
           </div>
           <p>перенести занятия по следующим дисциплинам:</p>
         </div>
-        <div className={'reschedule__main__components'}>
-          {
-            rescheduleState.rescheduleMainComponents.map((component, index) => {
-              return (
-                <div className='reschedule__main__component' key={index}>
-                  <h5>{index + 1}. </h5>
-                  <select
-                    name="type"
-                    className="browser-default"
-                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
-                  >
-                    <option>Лабораторная работа</option>
-                    <option>Практическое занятие</option>
-                    <option>Лекционное занятие</option>
-                  </select>
-                  <p>по дисциплине</p>
-                  <input
-                    type='text'
-                    name='discipline'
-                    placeholder='Название дисциплины'
-                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
+        <div className={"reschedule__main__components"}>
+          {rescheduleState.rescheduleMainComponents.map((component, index) => {
+            return (
+              <div className="reschedule__main__component" key={index}>
+                <h5>{index + 1}. </h5>
+                <select
+                  name="type"
+                  className="browser-default"
+                  onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                >
+                  <option>Лабораторная работа</option>
+                  <option>Практическое занятие</option>
+                  <option>Лекционное занятие</option>
+                </select>
+                <p>по дисциплине</p>
+                <input
+                  type="text"
+                  name="discipline"
+                  placeholder="Название дисциплины"
+                  onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                />
+                <span>&#040;</span>
+                <span>гр. </span>
+                <input
+                  type="text"
+                  name="group"
+                  placeholder="Группа"
+                  onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                />
+                <span>,</span>
+                <div className="datepicker__wrapper">
+                  <DatePicker
+                    selected={
+                      rescheduleState.rescheduleMainComponents[index].date
+                    }
+                    locale={ru}
+                    onChange={date =>
+                      handleRescheduleMainComponentsDateChange(date, index)
+                    }
+                    name="date"
+                    dateFormat={"dd.MM.yyyy"}
                   />
-                  <span>&#040;</span>
-                  <span>гр. </span>
-                  <input
-                    type='text'
-                    name='group'
-                    placeholder='Группа'
-                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
-                  />
-                  <span>,</span>
-                  <div className='datepicker__wrapper'>
-                    <DatePicker
-                      selected={rescheduleState.rescheduleMainComponents[index].date}
-                      locale={ru}
-                      onChange={(date) => handleRescheduleMainComponentsDateChange(date, index)}
-                      name="date"
-                      dateFormat={"dd.MM.yyyy"}
-                    />
-                  </div>
-                  <div className='datepicker__wrapper'>
-                    <input
-                      placeholder='№ пары'
-                      type="number"
-                      name="class"
-                      value={rescheduleState.rescheduleMainComponents.class}
-                      onChange={e => handleChangeMainRescheduleInputs(e, index)}
-                    />
-                  </div>
-                  <span>пара</span>
-                  <span>&#041;</span>
-                  <p>&nbsp;будет перенесено на</p>
-                  <div className='datepicker__wrapper'>
-                    <DatePicker
-                      selected={rescheduleState.rescheduleMainComponents[index].newDate}
-                      locale={ru}
-                      onChange={(date) => handleRescheduleMainComponentsDateChange(date, index)}
-                      name="newDate"
-                      dateFormat={"dd.MM.yyyy"}
-                    />
-                  </div>
-                  <span>,</span>
-                  <div className='datepicker__wrapper'>
-                    <input
-                      placeholder='№ пары'
-                      type="number"
-                      name="newClass"
-                      value={rescheduleState.rescheduleMainComponents.newClass}
-                      onChange={e => handleChangeMainRescheduleInputs(e, index)}
-                    />
-                  </div>
-                  <span>пара</span>
-                  <span>, ауд. </span>
-                  <div className='datepicker__wrapper'>
-                    <input
-                      placeholder='№ ауд.'
-                      type="number"
-                      name="room"
-                      value={rescheduleState.rescheduleMainComponents.room}
-                      onChange={e => handleChangeMainRescheduleInputs(e, index)}
-                    />
-                  </div>
                 </div>
-              )
-            })
-          }
+                <div className="datepicker__wrapper">
+                  <input
+                    placeholder="№ пары"
+                    type="number"
+                    name="class"
+                    value={rescheduleState.rescheduleMainComponents.class}
+                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                  />
+                </div>
+                <span>пара</span>
+                <span>&#041;</span>
+                <p>&nbsp;будет перенесено на</p>
+                <div className="datepicker__wrapper">
+                  <DatePicker
+                    selected={
+                      rescheduleState.rescheduleMainComponents[index].newDate
+                    }
+                    locale={ru}
+                    onChange={date =>
+                      handleRescheduleMainComponentsDateChange(date, index)
+                    }
+                    name="newDate"
+                    dateFormat={"dd.MM.yyyy"}
+                  />
+                </div>
+                <span>,</span>
+                <div className="datepicker__wrapper">
+                  <input
+                    placeholder="№ пары"
+                    type="number"
+                    name="newClass"
+                    value={rescheduleState.rescheduleMainComponents.newClass}
+                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                  />
+                </div>
+                <span>пара</span>
+                <span>, ауд. </span>
+                <div className="datepicker__wrapper">
+                  <input
+                    placeholder="№ ауд."
+                    type="number"
+                    name="room"
+                    value={rescheduleState.rescheduleMainComponents.room}
+                    onChange={e => handleChangeMainRescheduleInputs(e, index)}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
         <button
           className="btn-floating btn-small waves-effect waves-light"
@@ -279,7 +291,7 @@ function App() {
           <i className="material-icons">add</i>
         </button>
       </div>
-    )
+    );
   };
 
   const handleSubstituteChange = e =>
@@ -322,6 +334,16 @@ function App() {
     });
   };
 
+  const handleSaveClick = () => {
+    let doc = generateDocFile(
+      state,
+      state.theme === "О замене преподавателя" ? substitutingState : "HW"
+    );
+    Packer.toBlob(doc).then(blob => {
+      saveAs(blob, "Служебная записка.docx");
+    });
+  };
+
   const SubstitutingBody = () => {
     return (
       <div className="body">
@@ -355,7 +377,7 @@ function App() {
           <ol>
             {substitutingState.days.map((item, i) => (
               <li key={i}>
-                <div className='datepicker__wrapper'>
+                <div className="datepicker__wrapper">
                   <DatePicker
                     selected={item.date}
                     locale={ru}
@@ -390,7 +412,7 @@ function App() {
                     value={item.group}
                     onChange={e => handleSubstituteDayChange(e, i)}
                   />
-                  <div className='datepicker__wrapper'>
+                  <div className="datepicker__wrapper">
                     <input
                       type="number"
                       name="class"
@@ -461,7 +483,7 @@ function App() {
           </div>
           <div className="header__fields__item">
             <p className="header__fields__item__title">Дата:</p>
-            <div className={'datepicker__wrapper'}>
+            <div className={"datepicker__wrapper"}>
               <DatePicker
                 selected={state.date}
                 locale={ru}
@@ -487,10 +509,6 @@ function App() {
     );
   };
 
-  const onSaveNoteClick = () => {
-    //save to doc
-  }
-
   const renderFooter = () => {
     return (
       <div className="footer">
@@ -511,7 +529,7 @@ function App() {
           </div>
           <button
             className="waves-effect waves-light btn"
-            onClick={onSaveNoteClick}
+            onClick={handleSaveClick}
           >
             сохранить записку
           </button>
@@ -533,4 +551,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
