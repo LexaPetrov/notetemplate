@@ -149,7 +149,7 @@ export const generateDocFile = (state, bodyState) => {
         style: "Common1",
         children: [
           new TextRun({
-            text: state.footerWho + "						" + state.footerWhoName
+            text: state.footerWho + "                                                                  " + state.footerWhoName
           })
         ]
       })
