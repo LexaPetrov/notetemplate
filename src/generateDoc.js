@@ -52,6 +52,24 @@ export const generateDocFile = (state, bodyState) => {
     },
     children: [
       new Paragraph({
+        style: "Common1",
+        children: [
+          new TextRun({
+            text: " ",
+            size: 24
+          })
+        ]
+      }),
+      new Paragraph({
+        style: "Common1",
+        children: [
+          new TextRun({
+            text: " ",
+            size: 24
+          })
+        ]
+      }),
+      new Paragraph({
         children: [
           new TextRun({
             text: "СЛУЖЕБНАЯ ЗАПИСКА\n",
@@ -67,7 +85,8 @@ export const generateDocFile = (state, bodyState) => {
         style: "Common1",
         children: [
           new TextRun({
-            text: " "
+            text: " ",
+            size: 32
           })
         ]
       }),
@@ -290,10 +309,6 @@ const generateRescheduleBody = state => {
           ]
         })
       ];
-    }),
-    new Paragraph({
-      style: "Common1",
-      text: " "
     }),
     new Paragraph({
       style: "Common1",
